@@ -166,3 +166,57 @@ Even if you have assigned a Role to a VM, you still need a **Token** for every r
 
 ---
 *Note: Managed Identity is the standard for modern Azure architecture to achieve a "Zero Trust" environment.*
+
+
+### Steps to provide an storageAccount access to VM in Azure
+```bash
+To give your VM access to a specific storage account:
+
+Navigate to your Storage Account in the Azure Portal.
+
+Click on Access Control (IAM) in the left-hand sidebar.
+
+Click + Add and select Add role assignment.
+
+Role: Search for Storage Blob Data Reader (or Contributor if you need to upload).
+
+Assign access to: Select Managed identity.
+
+Members: Click + Select members, find your VM's name, and select it.
+
+Review + assign: Save the changes.
+```
+
+
+**We can actually choose how "broad" this permission is by where you click the IAM button:**
+
+* At the Storage Account: VM can access every container in that specific account.
+
+* At the Resource Group: VM can access every storage account inside that RG.
+
+* At the Container level: VM can only access one specific folder/container inside the storage account.
+
+*With CLI*
+```bash
+# Get the Principal ID of your VM
+$ principal_id=$(az vm identity show --name managed-identity-vm --resource-group managed-identity-vm_group --query principalId)
+
+
+# Assign the "Reader" role to that VM for the specific Storage Account
+$ az role assignment create \
+    --assignee "$principal_id" \
+    --role "Storage Blob Data Reader" \
+    --scope "/subscriptions/YOUR_SUB_ID/resourceGroups/YourRG/providers/Microsoft.Storage/storageAccounts/YourStorageAccountName"
+```
+
+## 6.1 The Three Main Identities
+* **User Identity**: You. Your email address.
+
+* **Service Principal**: A "Ghost User." It has a username (Client ID) and a password (Secret). You use this for apps living outside Azure.
+
+* **Managed Identity**: A "Robot Identity." The robot (VM) is the ID. No password needed. You use this for apps living inside Azure.
+
+## 6.2 How they connect (The 3-Step Logic)
+* **The Subject (Principal ID)**: The VM or User.
+* **The Permission (Role)**: "Contributor" or "Reader."
+* **The Target (Scope)**: The Storage Account or Resource Group.
