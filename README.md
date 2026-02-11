@@ -220,3 +220,65 @@ $ az role assignment create \
 * **The Subject (Principal ID)**: The VM or User.
 * **The Permission (Role)**: "Contributor" or "Reader."
 * **The Target (Scope)**: The Storage Account or Resource Group.
+
+
+# Azure Identity & RBAC: The "Actor" vs. "Permission" Logic
+
+## 1. The Core Concept: Actors and Roles
+In Azure, the identity (Who) is completely separate from the permission (What). Whether the actor is a human or a machine, the way we grant access is identical: **Assigning a Role.**
+
+
+
+---
+
+## 2. Comparing Identity Types (The "Actors")
+Think of these as the "ID Cards" presented to Azure.
+
+| Actor Type | Azure Identity Name | Authentication Method |
+| :--- | :--- | :--- |
+| **Humans** | **Users / Groups** | Password, MFA, or Single Sign-On. |
+| **Azure Services** | **Managed Identity** | Metadata Service (IMDS) - No passwords. |
+| **External Apps** | **Service Principal** | Client ID + Client Secret (Password). |
+
+---
+
+## 3. The Universal Permission Language: Roles
+A **Role** is simply a list of allowed actions (e.g., `Microsoft.Storage/storageAccounts/blobServices/containers/read`). 
+
+**You do not give a VM an Identity *instead* of a Role; you give it an Identity *so that you have something to attach the Role to.***
+
+### Standard Role Assignment Logic:
+> **[The Identity]** + **[The Role]** + **[The Scope]** = **Access**
+
+**Example:**
+* **Identity:** `Jenkins-Build-VM` (Managed Identity)
+* **Role:** `Storage Blob Data Contributor`
+* **Scope:** `/resourceGroups/Production-Data-RG`
+
+
+
+---
+
+## 4. Why Services use Managed Identities
+While a User and a VM both use **Roles**, Managed Identities are preferred for services because:
+1. **No Credentials:** There is no password for a hacker to steal from your code.
+2. **Lifecycle:** If you delete the VM, the Identity (and its Role assignments) are cleaned up automatically.
+3. **Automation:** The service can request its own **Access Token** silently in the background.
+
+---
+
+## 5. Summary Table for Documentation
+
+| Scenario | What is the Identity? | How is Permission Granted? |
+| :--- | :--- | :--- |
+| **Developer accessing Portal** | User Account | Assign "Reader" role to the **User**. |
+| **VM accessing Storage** | Managed Identity | Assign "Storage Blob Data Reader" to the **VM**. |
+| **Team accessing a Project** | Group | Assign "Contributor" role to the **Group**. |
+| **GitHub Actions deploying code** | Service Principal | Assign "Website Contributor" to the **Service Principal**. |
+
+---
+
+## 6. Key Takeaway
+* **The Identity** identifies *who* is knocking at the door.
+* **The Role** determines *what* they can do once they enter.
+* **The Scope** determines *which* room they are allowed to enter.
