@@ -63,3 +63,6 @@ echo "Healthy" > /var/www/html/health.html
 
 # Restart Nginx to apply changes
 systemctl restart nginx
+```
+
+Visit the [Markdown Guide](https://learn.microsoft.com/en-us/azure/application-gateway/quick-create-portal) for more information.
