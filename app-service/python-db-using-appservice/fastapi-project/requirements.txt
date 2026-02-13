@@ -1,0 +1,5 @@
+fastapi
+uvicorn[standard]
+gunicorn
+psycopg[binary]  # The driver to talk to PostgreSQL
+azure-identity   # For the "Passwordless" Managed Identity we discussed
