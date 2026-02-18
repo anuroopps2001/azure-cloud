@@ -1,0 +1,17 @@
+{
+    "IsEncrypyed": false,
+    "Values": {
+        "AzureWebJobsStorage": "UseDevelopmentStorage=true",
+        "FUNCTIONS_WORKER_RUNTIME": "python",
+        "PostgresConnectionString": "host=myapp-db-server-anuroop.postgres.database.azure.com dbname=postgres user=myadmin password=Anuroopps@2108 port=5432 sslmode=require",
+        "CleanupSchedule": "0 */5 * * *",
+        "AZURE_SUBSCRIPTION_ID": "cc076e9a-89bc-4a47-86e4-09c6d0967bd8",
+        "DB_RESOURCE_GROUP": "myapp-rg",
+        "DB_SERVER_NAME": "myapp-db-server-anuroop"
+    }
+}
+
+
+
+
+
