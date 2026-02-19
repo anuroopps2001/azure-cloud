@@ -27,4 +27,4 @@ EXPOSE 8000
 # --host <str>: Specifies the host IP address to bind to. Use --host 0.0.0.0 to make the application accessible on your local network or from external machines
 # --port <int>: Specifies the port to run the server on. The default is 8000.
 # CMD [ "uvicorn", "app:app", "--host", "0.0.0.0", "--port", "{PORT}" ]
-CMD ["sh", "-c", "uvicorn app:app --host 0.0.0.0 --port ${PORT}"]
+CMD ["sh", "-c", "uvicorn app:app --host 0.0.0.0 --port 8000"]
