@@ -428,16 +428,6 @@ Security achieved:
 
 ---
 
-# 🔜 Next Direction
-
-Possible next evolution:
-
-* Private Endpoint for App Service (fully private app)
-* App Gateway with Private Backend
-* Advanced Private DNS design
-
----
-
 # ✅ Summary
 
 This learning journey demonstrated:

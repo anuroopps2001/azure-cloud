@@ -411,8 +411,3 @@ Features in place:
 * Centralized ingress
 * Managed Identity authentication
 * Private DNS resolution
-
-Next evolution:
-
-* Controlled outbound (NAT Gateway)
-* Multi-VNet hub-spoke networking.

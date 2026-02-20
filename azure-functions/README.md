@@ -139,24 +139,6 @@ Starting deployment pipeline.
 [Kudu-SourcePackageUriDownloadStep] Skipping download. Zip package is present at /tmp/zipdeploy/f4493405-f5ca-43df-9fd4-3f860e8d9dbc.zip        
 [Kudu-ValidationStep] starting.
 [Kudu-ValidationStep] completed.
-[Kudu-ExtractZipStep] starting.
-[Kudu-ExtractZipStep] completed.
-[Kudu-ContentValidationStep] starting.
-[Kudu-ContentValidationStep] completed.
-[Kudu-PreBuildValidationStep] starting.
-[Kudu-PreBuildValidationStep] completed.
-[Kudu-OryxBuildStep] starting.
-[Kudu-OryxBuildStep] completed.
-[Kudu-PostBuildValidationStep] starting.
-[Kudu-PostBuildValidationStep] completed.
-[Kudu-PackageZipStep] starting.
-[Kudu-PackageZipStep] completed.
-[Kudu-UploadPackageStep] starting.
-[Kudu-UploadPackageStep] completed. Uploaded package to storage successfully.
-[Kudu-RemoveWorkersStep] starting.
-[Kudu-RemoveWorkersStep] completed.
-[Kudu-SyncTriggerStep] starting.
-[Kudu-CleanUpStep] starting.
 [Kudu-CleanUpStep] completed.
 Finished deployment pipeline.
 [Kudu-SyncTriggerStep] completed.
