@@ -47,8 +47,27 @@ Try using 'az postgres flexible-server connect' command to test out connection.
   "version": "18"
 }
 ```
+### 1. The "Local Folder" Check
+```bash
+func init --python
+```
+After running above command, make sure your folder on your laptop looks exactly like this:
 
-### StoragAccount 
+
+- function_app.py (The code we finalized with the API and the Timer).
+
+- requirements.txt (Crucial: This tells Azure to install psycopg2-binary, azure-identity, and azure-mgmt-postgresqlflexibleservers).
+
+- host.json (The config file that tells Azure this is a v2 Python function).
+
+- host.json: This is for Azure's engine. It tells the cloud "This is a version 2.0 app" and "Please download the tools needed for Python and Timers."
+
+- local.settings.json: This is for Your Code. It stores the "Secrets" (Connection Strings) and "Schedules" so your Python code can read them as Environment Variables.
+
+***In the Azure Functions world, host.json is for global configuration (like the extension bundles), while local.settings.json is where your environment variables (like connection strings and schedules) live during local development.***
+
+
+### 2. StoragAccount 
 **Pupose**: Azure Functions are stateless. This means when Azure spins up a tiny container to run your code, that container is empty. It needs a place to pull your code from and a place to write logs.
 
 The Storage Account serves three main purposes for the Function App:
@@ -66,7 +85,7 @@ $ az storage account create \
 > --sku Standard_LRS
 ```
 
-### Create App Insights first
+### 3. Create App Insights first
 ```bash
 az monitor app-insights component create \
   --app my-insights \
@@ -74,18 +93,22 @@ az monitor app-insights component create \
   --resource-group myapp-rg
 ```
 
-### Create the Function App (Flex Consumption is best for Python)
+### 4. Create the Function App (Flex Consumption is best for Python)
 ```bash
 az functionapp create \
   --name my-devops-func-anuroop \
   --resource-group myapp-rg \
-  --storage-account stappdevanuroop2026 \   # This is the specific 'Hard Drive' I want this Function App to use.
+  --storage-account stappdevanuroop2026 \   # This is the specific 'Hard Drive', where our function code will be stored inside azure and it will be triggered based on the time we specify and that;s why it;s called as Time trigger functions
   --runtime python \
   --runtime-version 3.11 \
   --os-type Linux \
   --app-insights my-insights \
   --flexconsumption-location centralindia \
   --instance-memory 512
+```
+OR
+```bash
+az functionapp create --resource-group azure-app-function-rg --consumption-plan-location northeurope --runtime python --runtime-version 3.10 --functions-version 4 --name httpTriggerFuncApp01 --os-type linux --storage-account appafuncstorageacc
 ```
 
 **If you didn't have that storage account and its State Locking, and you scaled your Function App to 10 instances, you would have 10 "alarm clocks" going off at once, all trying to stop the same database simultaneously. That would cause API conflicts and wasted resources.**
@@ -104,23 +127,8 @@ The storage account uses a feature called Blob Leases. Here is the play-by-play 
 
 **We built the "Hardware" in the cloud, and now it's time to install the "Software."**
 
-### The "Local Folder" Check
-Before running the deployment command, make sure your folder on your laptop looks exactly like this:
 
-- function_app.py (The code we finalized with the API and the Timer).
-
-- requirements.txt (Crucial: This tells Azure to install psycopg2-binary, azure-identity, and azure-mgmt-postgresqlflexibleservers).
-
-- host.json (The config file that tells Azure this is a v2 Python function).
-
-- host.json: This is for Azure's engine. It tells the cloud "This is a version 2.0 app" and "Please download the tools needed for Python and Timers."
-
-- local.settings.json: This is for Your Code. It stores the "Secrets" (Connection Strings) and "Schedules" so your Python code can read them as Environment Variables.
-
-***In the Azure Functions world, host.json is for global configuration (like the extension bundles), while local.settings.json is where your environment variables (like connection strings and schedules) live during local development.***
-
-
-### Deploy the Code
+### 5. Deploy the Function code to Azure
 First, make sure you are in the folder containing your `function_app.py`. Run:
 ```bash
 $ func azure functionapp publish <YOUR_FUNCTION_APP_NAME> --python

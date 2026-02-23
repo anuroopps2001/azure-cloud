@@ -157,3 +157,53 @@ sudo iptables -t nat -A POSTROUTING -o eth0 -j MASQUERADE
 **The NAT Gateway: Swaps the private IP for its Public IP and sends it to the real Google.**
 
 
+
+## Multiple Spokes and Single Hub Vnet
+#### To allow communication between spoke vnets along with hub vnet and to reach internet
+
+#### 🛣️ The Two-Spoke Routing Setup
+Route Table for Spoke-01 (10.50.0.0/16)
+```bash
+| Route Name  | Destination  | Next Hop Type     | Next Hop Address | Purpose                 |
+|-------------|--------------|-------------------|------------------|-------------------------|
+| To-Internet | 0.0.0.0/0    | Virtual Appliance | 10.100.1.4       | Exit via Hub            |
+| To-Spoke-02 | 10.60.0.0/16 | Virtual Appliance | 10.100.1.4       | Reach neighbor via Hub  |
+```
+
+Route Table for Spoke-02 (10.60.0.0/16)
+```bash
+| Route Name  | Destination  | Next Hop Type     | Next Hop Address | Purpose                 |
+|-------------|--------------|-------------------|------------------|-------------------------|
+| To-Internet | 0.0.0.0/0    | Virtual Appliance | 10.100.1.4       | Exit via Hub            |
+| To-Spoke-01 | 10.50.0.0/16 | Virtual Appliance | 10.100.1.4       | Reach neighbor via Hub  |
+```
+
+
+**PRO TIP**
+
+***Instead of listing every Spoke individually, you can use one rule that covers all private traffic. Since most Azure VNets live in the 10.x.x.x range, you can do this:
+
+One "Universal" Route Table for ALL Spokes:
+
+1. To-Internet: 0.0.0.0/0 -> Hub NVA
+
+2. To-Internal-All: 10.0.0.0/8 -> Hub NVA
+
+Why this works: Even if you add Spoke-03 (10.70.0.0/16), it’s already covered by the 10.0.0.0/8 rule! You can associate the same Route Table object with every single spoke you ever create.***
+
+
+#### Trace Route Output Analysis
+```bash
+$ traceroute 10.100.2.4
+1  10.100.1.4 (10.100.1.4)  1.471 ms  1.445 ms  1.548 ms
+
+ 2  * * *
+
+ 3  10.100.2.4 (10.100.2.4)  2.739 ms *  2.659 ms
+```
+
+Explanation:
+
+- **UDR is working**:Hop 1 shows your traffic immediately went to 10.100.1.4 (the NVA)
+- **Peering is working**: The traffic successfully crossed from the Spoke VNet to the Hub VNet.
+- **NVA Forwarding is working**: Hop 3 shows the NVA didn't drop the packet; it passed it along to the psql flexi server Database at 10.100.2.4.

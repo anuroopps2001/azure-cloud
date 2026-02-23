@@ -1,3 +1,6 @@
 status.xlsx
 ~$status.xlsx
 *.appgw
+*.terraform
+terraform.tfstate
+*.tfvars
