@@ -126,7 +126,3 @@ When moving from your App Service demo to Azure Functions with **Azure Database 
 3.  **Environment Variables:** Store your PostgreSQL connection string in the Function App's **Configuration > Application Settings** just like you did with the Web App.
 
 ---
-
-## 4. Next Technical Goal
-* **Objective:** Create an `HttpTrigger` Azure Function.
-* **Task:** Write a function that accepts a JSON payload and inserts it into your existing PostgreSQL Flexible Server.

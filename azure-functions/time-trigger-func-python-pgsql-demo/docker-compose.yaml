@@ -1,0 +1,23 @@
+version: '3.8'
+services:
+  db:
+    image: postgres:18.2
+    restart: always
+    environment:
+      POSTGRES_USER: admin
+      POSTGRES_PASSWORD: password123
+      POSTGRES_DB: mydemodb
+    ports:
+      - "5432:5432"
+    
+  azure-function:
+    build: .
+    ports:
+      - "8080:80"
+    environment:
+      AzureWebJobsStorage: "UseDevelopmentStorage=false"
+      FUNCTIONS_WORKER_RUNTIME: "python"
+      # use 'db' (the service name) as the host here
+      PostgresConnectionString: "host=db dbname=mydemodb user=admin password=password123 port=5432 sslmode=disable"
+    depends_on:
+      - db

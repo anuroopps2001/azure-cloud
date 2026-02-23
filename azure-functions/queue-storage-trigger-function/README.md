@@ -1,0 +1,1 @@
+**This kind of functions will be triggered whenever there a message added into the storageaccount queue,that is being used for the specific quere trigger function**

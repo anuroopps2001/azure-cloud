@@ -163,9 +163,3 @@ If it works, RBAC is correctly configured.
 -   GitHub Actions deployments
 
 ------------------------------------------------------------------------
-
-## 🚀 Next Practice Ideas
-
--   Create a second app with Reader role on prod-sub
--   Compare access behavior between two app identities
--   Replace client secret with certificate authentication

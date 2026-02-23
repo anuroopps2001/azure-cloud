@@ -1,42 +1,3 @@
-## Networking Options while creating AppService of type Webapp
-```bash
-1. Enable Public Access
-Select: ON (for now)
-
-What it does: This allows the App Service to have a public xxx.azurewebsites.net URL.
-
-Why for your setup? Even though the Application Gateway will be the "Front Door," you usually keep this on during the initial build to test that the Go app is actually running.
-
-The "Pro" Move: Once the Application Gateway is working, you don't turn this "Off." Instead, you use Access Restrictions (which we discussed earlier) to say: "Public access is allowed, but ONLY from the Application Gateway's IP." * If you turn this completely OFF, the Application Gateway won't be able to reach the App Service either unless you use Private Endpoints (which is much more complex).
-
-2. Enable Virtual Network (VNet) Integration
-Select: ON
-
-What it does: This gives your App Service a "foot" inside your VNet. It allows the App Service to talk to other things in your VNet (like a Private Database or a VM) without going over the public internet.
-
-Why for your setup? While not strictly required just to receive traffic from the Gateway, it is Best Practice.
-
-The Requirement: You must pick a Subnet for it.
-
-Warning: This subnet must be empty and dedicated to App Service Integration. You cannot put your Application Gateway or VMs in this specific subnet.
-
-Recommendation: Create a subnet called snet-app-integration.
-```
-
-### Under Application Insights
-```bash
-1. Enable Application Insights :
-Application Insights is like the "black box" flight recorder for your Go application. Since you are using a Containerized Go app inside an App Service, you need a way to see what's happening inside the code without having to manually check SSH consoles.
-
-1. Why it’s useful for your specific setup
-Live Metrics: You can see a real-time graph of people hitting your Application Gateway and how long it takes for your Go app to respond.
-
-Failure Analysis: If your Go app crashes or returns a 500 Internal Server Error, App Insights will show you the exact line of code (or the specific HTTP header) that caused it.
-
-The "Map": It creates an Application Map, which is a visual diagram showing the flow of traffic from the Gateway to the App Service.
-
-```
-
 ### Confirming communication between AppGateway and AppService
 
 ## Azure Appservice with Application Gateway with TLS Termination at AppGateway
@@ -236,7 +197,7 @@ Imagine you are trying to visit a friend, "Go-App", who lives in a massive apart
 
 
 **Real Process Behind the scenes**
-Let’s follow a single click from your laptop to your Go code:
+Let’s follow a single click from our laptop to our Go code:
 
 * Step A: The Entry (TLS Termination)
 You type https://<Gateway-IP>.
@@ -260,9 +221,9 @@ The Gateway sends the request over Port 80 (HTTP) to the App Service.
 Because you turned off "HTTPS Only" on the App Service, it accepts this Port 80 traffic from the Gateway.
 
 Step D: The App Service to Container
-The App Service sees the "Host" label, matches it to your specific app, and passes it into your Docker Container.
+The App Service sees the "Host" label, matches it to your specific app, and passes it into our Docker Container.
 
-Your Go App receives it and prints those headers you saw!
+our Go App receives it and prints those headers you saw!
 
 
 #### Real Flow From Appservice into Containers inside AppService
@@ -356,5 +317,3 @@ Find HTTPS Only and set it to Off.
 
 Wait, why turn it Off? Because the Application Gateway is already handling the "Secure" part. If the App Service also tries to force HTTPS, they start "fighting" over the connection. The Gateway talks to the App Service over Port 80 (HTTP), but if the App Service says "No! Talk to me on HTTPS!", it sends a redirect back to your browser, which causes the URL change and the error you see.
 
-
-2. * 
